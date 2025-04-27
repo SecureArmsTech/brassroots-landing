@@ -8,15 +8,33 @@ export default function SignupForm() {
     const [role, setRole] = useState<Role>('buyer');
     const [status, setStatus] = useState<'idle' | 'success' | 'error'>('idle');
 
+    // Utility: Get channel source from localStorage, default to "direct"
+    function getChannelSource(): string {
+        if (typeof window !== "undefined") {
+            return localStorage.getItem("br_src") || "direct";
+        }
+        return "direct";
+    }
+
     async function handleSubmit(e: React.FormEvent) {
         e.preventDefault();
         setStatus('idle');
         try {
+            const payload = {
+                email,
+                name,
+                role,
+                fields: {
+                    source: getChannelSource(),
+                },
+            };
+
             const res = await fetch('/api/signup', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ email, name, role }),
+                body: JSON.stringify(payload),
             });
+
             if (res.ok) {
                 setStatus('success');
                 setEmail('');
@@ -40,6 +58,7 @@ export default function SignupForm() {
                     value={email}
                     onChange={e => setEmail(e.target.value)}
                     className="mt-1 block w-full border rounded p-2"
+                    autoComplete="email"
                 />
             </div>
             <div>
@@ -50,6 +69,7 @@ export default function SignupForm() {
                     value={name}
                     onChange={e => setName(e.target.value)}
                     className="mt-1 block w-full border rounded p-2"
+                    autoComplete="name"
                 />
             </div>
             <fieldset className="flex space-x-4">
@@ -78,8 +98,9 @@ export default function SignupForm() {
             <button
                 type="submit"
                 className="w-full py-2 bg-blue-600 text-white rounded"
+                disabled={status === 'success'}
             >
-                Join Wait-list
+                {status === 'success' ? "Joined!" : "Join Wait-list"}
             </button>
             {status === 'success' && (
                 <p className="text-green-600">Thank you for joining the wait-list!</p>
