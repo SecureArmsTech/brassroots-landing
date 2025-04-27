@@ -1,4 +1,3 @@
-cat << 'EOF' > .github/workflows/ci.yml
 name: ci
 
 on:
@@ -35,7 +34,7 @@ jobs:
       - name: Run lint
         run: npm run lint
 
-      - name: Run type‐check
+      - name: Run type-check
         run: npm run type-check
 
       - name: (Optional) Run tests
@@ -49,4 +48,3 @@ jobs:
 
       - name: Build Next.js
         run: npm run build
-EOF
