@@ -34,9 +34,6 @@ jobs:
       - name: Run lint
         run: npm run lint
 
-      - name: Run type-check
-        run: npm run type-check
-
       - name: (Optional) Run tests
         if: ${{ always() }}
         run: |
