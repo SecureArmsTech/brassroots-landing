@@ -1,3 +1,5 @@
+<!-- test-protection branch for verifying branch rules -->
+
 ```markdown
 # BrassRoots Landing Page
 
