@@ -1,13 +1,15 @@
-import { useState } from 'react';
+'use client';
 
-export function SignupForm() {
+import React, { useState, FormEvent } from 'react';
+
+export default function SignupForm() {
     const [email, setEmail] = useState('');
     const [name, setName] = useState('');
     const [role, setRole] = useState<'buyer' | 'builder' | ''>('');
     const [message, setMessage] = useState('');
     const [submitting, setSubmitting] = useState(false);
 
-    async function handleSubmit(e: React.FormEvent) {
+    async function handleSubmit(e: FormEvent<HTMLFormElement>) {
         e.preventDefault();
         setSubmitting(true);
         setMessage('');
@@ -71,7 +73,7 @@ export function SignupForm() {
                     />{' '}
                     Buyer
                 </label>
-                <label>
+                <label className="ml-4">
                     <input
                         type="radio"
                         name="role"
