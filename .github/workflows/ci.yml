@@ -34,14 +34,16 @@ jobs:
       - name: Run lint
         run: npm run lint
 
-      - name: (Optional) Run tests
-        if: ${{ always() }}
+      - name: Install Playwright browsers
+        run: npx playwright install --with-deps
+
+      - name: Run Playwright E2E tests
         run: |
-          if npm run test -- --help > /dev/null 2>&1; then
-            npm run test
-          else
-            echo "No test script defined, skipping tests."
-          fi
+          npx concurrently \
+            "npm run dev" \
+            "npx wait-on http://localhost:3000 && npx playwright test"
+        env:
+          CI: true
 
       - name: Build Next.js
         run: npm run build
