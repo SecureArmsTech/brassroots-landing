@@ -31,9 +31,13 @@ export function SignupForm() {
             }
 
             setMessage('Thank you for joining the wait-list!');
-        } catch (err: any) {
-            console.error('Signup error:', err);
-            setMessage('Something went wrong. Please try again.'); // ✅ Visible error
+        } catch (err: unknown) {
+            if (err instanceof Error) {
+                console.error('Signup error:', err.message);
+            } else {
+                console.error('Signup error:', err);
+            }
+            setMessage('Something went wrong. Please try again.');
         } finally {
             setSubmitting(false);
         }
