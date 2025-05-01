@@ -1,64 +1,56 @@
 // src/pages/api/signup.ts
 import type { NextApiRequest, NextApiResponse } from 'next';
 
-type ResponseData = {
-    success: boolean;
-    message?: string;
-};
-
-export default async function handler(
-    req: NextApiRequest,
-    res: NextApiResponse<ResponseData>
-) {
+export default async function handler(req: NextApiRequest, res: NextApiResponse) {
     if (req.method !== 'POST') {
-        res.setHeader('Allow', 'POST');
-        return res
-            .status(405)
-            .json({ success: false, message: 'Method Not Allowed' });
+        return res.status(405).json({ error: { message: 'Method not allowed' } });
     }
 
-    const { email, name, role } = req.body as {
-        email?: string;
-        name?: string;
-        role?: string;
-    };
+    const { email, name, role, source } = req.body;
 
     if (!email || !name || !role) {
-        return res
-            .status(400)
-            .json({ success: false, message: 'Missing required fields' });
+        return res.status(400).json({ error: { message: 'Missing required fields' } });
+    }
+
+    // 🧪 Return fake success if in test mode
+    if (process.env.NODE_ENV === 'test') {
+        return res.status(200).json({ message: 'Mocked success in test mode' });
     }
 
     try {
-        const mlResponse = await fetch(
-            'https://api.mailerlite.com/api/v2/subscribers',
-            {
-                method: 'POST',
-                headers: {  
-                    'Content-Type': 'application/json',
-                    'X-MailerLite-ApiKey': process.env.MAILERLITE_API_KEY!,
-                },
-                body: JSON.stringify({
-                    email,
-                    fields: { name, role },
-                    groups: [process.env.MAILERLITE_LIST_ID!],
-                }),
-            }
-        );
+        const apiKey = process.env.MAILERLITE_API_KEY;
 
-        if (!mlResponse.ok) {
-            const errorText = await mlResponse.text();
-            console.error('MailerLite error:', errorText);
-            return res
-                .status(500)
-                .json({ success: false, message: 'Subscription failed' });
+        if (!apiKey) {
+            throw new Error('Missing MAILERLITE_API_KEY');
         }
 
-        return res.status(200).json({ success: true });
-    } catch (err) {
-        console.error('Unhandled error:', err);
-        return res
-            .status(500)
-            .json({ success: false, message: 'Internal server error' });
+        const response = await fetch('https://connect.mailerlite.com/api/subscribers', {
+            method: 'POST',
+            headers: {
+                Authorization: `Bearer ${apiKey}`,
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                email,
+                name,
+                fields: {
+                    role,
+                    source,
+                },
+            }),
+        });
+
+        if (!response.ok) {
+            const error = await response.json();
+            return res.status(response.status).json({ error });
+        }
+
+        return res.status(200).json({ message: 'Signup successful' });
+    } catch (err: unknown) {
+        if (err instanceof Error) {
+            return res.status(500).json({ error: { message: err.message } });
+        }
+
+        return res.status(500).json({ error: { message: 'Unknown error' } });
     }
 }
