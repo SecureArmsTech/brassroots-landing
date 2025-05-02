@@ -1,16 +1,21 @@
+// playwright.config.ts
 import { defineConfig } from '@playwright/test';
 
 export default defineConfig({
+    testDir: './tests',
+    timeout: 30 * 1000,
+    retries: 0,
     use: {
         baseURL: 'http://localhost:3000',
         headless: true,
-        viewport: { width: 1280, height: 720 },
         ignoreHTTPSErrors: true,
+        screenshot: 'only-on-failure',
+        video: 'retain-on-failure',
     },
     webServer: {
         command: 'npm run dev',
         port: 3000,
-        timeout: 120 * 1000,
-        reuseExistingServer: true, // critical line
+        reuseExistingServer: true,
+        timeout: 60 * 1000,
     },
 });
