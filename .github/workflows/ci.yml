@@ -11,7 +11,6 @@ on:
 jobs:
   ci:
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -39,9 +38,13 @@ jobs:
         run: npx playwright install --with-deps
 
       - name: Run Playwright E2E tests
-        run: npx playwright test
+        run: |
+          npx concurrently \
+            "npm run dev" \
+            "npx wait-on http://localhost:3000 && npx playwright test"
         env:
           CI: true
+          MAILERLITE_API_KEY: dummy_key
 
       - name: Build Next.js
         run: npm run build
