@@ -38,10 +38,7 @@ jobs:
         run: npx playwright install --with-deps
 
       - name: Run Playwright E2E tests
-        run: |
-          npx concurrently \
-            "npm run dev" \
-            "npx wait-on http://localhost:3000 && npx playwright test"
+        run: npx playwright test
         env:
           CI: true
           MAILERLITE_API_KEY: ${{ secrets.MAILERLITE_API_KEY }}
