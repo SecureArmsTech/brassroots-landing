@@ -1,6 +1,4 @@
-<!-- test-protection-2 for verifying branch rules -->
-
-```markdown
+````markdown
 # BrassRoots Landing Page
 
 _A privacy-first, censorship-resistant 2A-marketplace wait-list funnel_
@@ -18,24 +16,71 @@ _A privacy-first, censorship-resistant 2A-marketplace wait-list funnel_
 ```bash
 git clone git@github.com:SecureArmsTech/brassroots-landing.git
 cd brassroots-landing
+cp .env.example .env.local
+# Then edit .env.local to include actual API keys
 npm install
 npm run dev
+````
+
+---
+
+## End-to-End Testing
+
+We use [Playwright](https://playwright.dev/) for E2E testing.
+
+### Run tests locally
+
+```bash
+# Run with dev server automatically handled
+npx playwright test
 ```
+
+* Tests live in the `tests/` directory.
+* Configuration: [`playwright.config.ts`](playwright.config.ts)
+
+---
 
 ## CI/CD
 
-We use GitHub Actions + Vercel for continuous delivery:
+We use **GitHub Actions** and **Vercel** for continuous integration and deployment:
 
-1. **GitHub Actions** (`.github/workflows/ci.yml`)  
-   - Triggers on PRs and pushes to `main`.  
-   - Steps: `npm ci`, `npm run lint`, (optional) `npm run test`, `npm run build`.  
-   - Blocks merges on failure.  
+### GitHub Actions (`.github/workflows/ci.yml`)
 
-2. **Vercel**  
-   - Auto-deploys every successful push to `main` at <https://www.brassroots.market>.  
-   - Environment variables are managed in the Vercel dashboard under **Settings → Environment Variables**.
+* **Triggers:** Pull requests and pushes to `main`
+* **Steps:**
 
-Badge:  
-[![Build Status](https://github.com/SecureArmsTech/brassroots-landing/actions/workflows/ci.yml/badge.svg)](https://github.com/SecureArmsTech/brassroots-landing/actions)
+  * `npm ci`
+  * `npm run lint`
+  * `npx playwright install --with-deps`
+  * `npx playwright test`
+  * `npm run build`
+* Uses GitHub repo **secrets** for critical environment variables:
 
-```
+  * `MAILERLITE_API_KEY`
+  * `MAILERLITE_LIST_ID`
+
+### Vercel Deployment
+
+* Auto-deploys every successful push to `main`
+* Production: [https://www.brassroots.market](https://www.brassroots.market)
+* **Environment Variables** managed via Vercel dashboard under
+  `Settings → Environment Variables`
+
+---
+
+## Project Status
+
+✅ CI/CD passing
+✅ E2E test verifying wait-list submission attribution
+✅ Main branch protected
+🚧 Additional tests & features in progress
+
+---
+
+## License
+
+[MIT](LICENSE)
+
+````
+
+---
