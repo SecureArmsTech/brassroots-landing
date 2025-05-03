@@ -44,7 +44,8 @@ jobs:
             "npx wait-on http://localhost:3000 && npx playwright test"
         env:
           CI: true
-          MAILERLITE_API_KEY: dummy_key
+          MAILERLITE_API_KEY: ${{ secrets.MAILERLITE_API_KEY }}
+          MAILERLITE_LIST_ID: ${{ secrets.MAILERLITE_LIST_ID }}
 
       - name: Build Next.js
         run: npm run build
