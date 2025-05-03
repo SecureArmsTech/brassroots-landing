@@ -11,11 +11,12 @@ export default defineConfig({
         ignoreHTTPSErrors: true,
         screenshot: 'only-on-failure',
         video: 'retain-on-failure',
+        trace: 'on-first-retry',
     },
     webServer: {
         command: 'npm run dev',
         port: 3000,
-        reuseExistingServer: true,
+        reuseExistingServer: false,
         timeout: 60 * 1000,
     },
 });
