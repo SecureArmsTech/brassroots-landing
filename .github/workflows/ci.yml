@@ -34,14 +34,15 @@ jobs:
       - name: Run lint
         run: npm run lint
 
-      - name: (Optional) Run tests
-        if: ${{ always() }}
-        run: |
-          if npm run test -- --help > /dev/null 2>&1; then
-            npm run test
-          else
-            echo "No test script defined, skipping tests."
-          fi
+      - name: Install Playwright browsers
+        run: npx playwright install --with-deps
+
+      - name: Run Playwright E2E tests
+        run: npx playwright test
+        env:
+          CI: true
+          MAILERLITE_API_KEY: ${{ secrets.MAILERLITE_API_KEY }}
+          MAILERLITE_LIST_ID: ${{ secrets.MAILERLITE_LIST_ID }}
 
       - name: Build Next.js
         run: npm run build
