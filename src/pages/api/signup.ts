@@ -1,4 +1,5 @@
 // src/pages/api/signup.ts
+
 import type { NextApiRequest, NextApiResponse } from 'next';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
@@ -6,7 +7,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         return res.status(405).json({ error: { message: 'Method not allowed' } });
     }
 
-    const { email, name, role, source } = req.body;
+    const { email, name, role, channel_source } = req.body;
 
     if (!email || !name || !role) {
         return res.status(400).json({ error: { message: 'Missing required fields' } });
@@ -19,9 +20,13 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
     try {
         const apiKey = process.env.MAILERLITE_API_KEY;
+        const listId = process.env.MAILERLITE_LIST_ID;
 
         if (!apiKey) {
             throw new Error('Missing MAILERLITE_API_KEY');
+        }
+        if (!listId) {
+            throw new Error('Missing MAILERLITE_LIST_ID');
         }
 
         const response = await fetch('https://connect.mailerlite.com/api/subscribers', {
@@ -35,8 +40,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                 name,
                 fields: {
                     role,
-                    source,
+                    channel_source,
                 },
+                groups: [listId],
             }),
         });
 
@@ -50,7 +56,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         if (err instanceof Error) {
             return res.status(500).json({ error: { message: err.message } });
         }
-
         return res.status(500).json({ error: { message: 'Unknown error' } });
     }
 }

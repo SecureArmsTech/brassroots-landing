@@ -3,6 +3,12 @@
 
 import React, { useState, FormEvent } from 'react';
 
+declare global {
+  interface Window {
+    plausible?: (eventName: string) => void;
+  }
+}
+
 export default function SignupForm() {
     const [email, setEmail] = useState('');
     const [name, setName] = useState('');
@@ -24,13 +30,18 @@ export default function SignupForm() {
                     email,
                     name,
                     role,
-                    source: localStorage.getItem('br_src') || null,
+                    channel_source: localStorage.getItem('br_src') || null,
                 }),
             });
 
             const result = await res.json();
             if (!res.ok) {
                 throw new Error(result?.error?.message || 'Signup failed');
+            }
+
+            // Fire Plausible goal event
+            if (typeof window !== 'undefined' && window.plausible) {
+                window.plausible('signup');
             }
 
             setMessage('Thank you for joining the wait-list!');
@@ -115,10 +126,11 @@ export default function SignupForm() {
 
             {message && (
                 <p
-                    className={`mt-2 text-center ${message.toLowerCase().includes('thank')
-                            ? 'text-green-600'
-                            : 'text-red-600'
-                        }`}
+                    className={`mt - 2 text - center ${
+    message.toLowerCase().includes('thank')
+        ? 'text-green-600'
+        : 'text-red-600'
+} `}
                 >
                     {message}
                 </p>

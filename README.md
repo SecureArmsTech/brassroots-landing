@@ -1,4 +1,3 @@
-````markdown
 # BrassRoots Landing Page
 
 _A privacy-first, censorship-resistant 2A-marketplace wait-list funnel_
@@ -49,22 +48,24 @@ We use **GitHub Actions** and **Vercel** for continuous integration and deployme
 * **Triggers:** Pull requests and pushes to `main`
 * **Steps:**
 
-  * `npm ci`
-  * `npm run lint`
-  * `npx playwright install --with-deps`
-  * `npx playwright test`
-  * `npm run build`
+  1. `npm ci`
+  2. `npm run lint`
+  3. `npx playwright install --with-deps`
+  4. `npx playwright test`
+  5. `npm run build`
 * Uses GitHub repo **secrets** for critical environment variables:
 
   * `MAILERLITE_API_KEY`
   * `MAILERLITE_LIST_ID`
+  * `PLAUSIBLE_DOMAIN`
+  * `GTM_ID`
+  * `NEXT_PUBLIC_BR_SRC_KEY` (if used)
 
 ### Vercel Deployment
 
 * Auto-deploys every successful push to `main`
 * Production: [https://www.brassroots.market](https://www.brassroots.market)
-* **Environment Variables** managed via Vercel dashboard under
-  `Settings → Environment Variables`
+* **Environment Variables** managed via Vercel dashboard under **Settings → Environment Variables**
 
 ---
 
@@ -81,6 +82,5 @@ We use **GitHub Actions** and **Vercel** for continuous integration and deployme
 
 [MIT](LICENSE)
 
-````
-
----
+```
+```
