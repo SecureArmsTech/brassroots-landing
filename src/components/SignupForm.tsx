@@ -6,8 +6,8 @@ import React, { useState, FormEvent } from 'react';
 export default function SignupForm() {
     const [email, setEmail] = useState('');
     const [name, setName] = useState('');
-    // Default to 'buyer' so Builder never appears selected by default
-    const [role, setRole] = useState<'buyer' | 'builder'>('buyer');
+    // Default to 'buyer' so Seller never appears selected by default
+    const [role, setRole] = useState<'buyer' | 'seller'>('buyer');
     const [message, setMessage] = useState('');
     const [submitting, setSubmitting] = useState(false);
 
@@ -92,12 +92,12 @@ export default function SignupForm() {
                     <input
                         type="radio"
                         name="role"
-                        value="builder"
-                        onChange={() => setRole('builder')}
-                        checked={role === 'builder'}
+                        value="seller"
+                        onChange={() => setRole('seller')}
+                        checked={role === 'seller'}
                         className="focus:ring-blue-500"
                     />
-                    <span>Builder</span>
+                    <span>Seller</span>
                 </label>
             </fieldset>
 
