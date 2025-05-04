@@ -27,18 +27,13 @@ export default function SignupForm() {
             });
 
             const result = await res.json();
-
             if (!res.ok) {
                 throw new Error(result?.error?.message || 'Signup failed');
             }
 
             setMessage('Thank you for joining the wait-list!');
         } catch (err: unknown) {
-            if (err instanceof Error) {
-                console.error('Signup error:', err.message);
-            } else {
-                console.error('Signup error:', err);
-            }
+            console.error('Signup error:', err);
             setMessage('Something went wrong. Please try again.');
         } finally {
             setSubmitting(false);
@@ -47,22 +42,39 @@ export default function SignupForm() {
 
     return (
         <form onSubmit={handleSubmit} className="space-y-4 max-w-md mx-auto">
-            <input
-                type="email"
-                value={email}
-                onChange={e => setEmail(e.target.value)}
-                placeholder="Email"
-                required
-            />
-            <input
-                type="text"
-                value={name}
-                onChange={e => setName(e.target.value)}
-                placeholder="Name or Nick"
-                required
-            />
             <div>
-                <label>
+                <label htmlFor="email" className="block text-sm font-medium">
+                    Email
+                </label>
+                <input
+                    id="email"
+                    type="email"
+                    value={email}
+                    onChange={e => setEmail(e.target.value)}
+                    placeholder="Email"
+                    required
+                    className="mt-1 block w-full border border-gray-300 bg-white text-black rounded p-2"
+                />
+            </div>
+
+            <div>
+                <label htmlFor="name" className="block text-sm font-medium">
+                    Name or Nick
+                </label>
+                <input
+                    id="name"
+                    type="text"
+                    value={name}
+                    onChange={e => setName(e.target.value)}
+                    placeholder="Name or Nick"
+                    required
+                    className="mt-1 block w-full border border-gray-300 bg-white text-black rounded p-2"
+                />
+            </div>
+
+            <fieldset className="flex items-center space-x-4">
+                <legend className="sr-only">Role</legend>
+                <label className="flex items-center space-x-2">
                     <input
                         type="radio"
                         name="role"
@@ -70,30 +82,41 @@ export default function SignupForm() {
                         onChange={() => setRole('buyer')}
                         checked={role === 'buyer'}
                         required
-                    />{' '}
-                    Buyer
+                        className="focus:ring-blue-500"
+                    />
+                    <span>Buyer</span>
                 </label>
-                <label className="ml-4">
+                <label className="flex items-center space-x-2">
                     <input
                         type="radio"
                         name="role"
                         value="builder"
                         onChange={() => setRole('builder')}
                         checked={role === 'builder'}
-                    />{' '}
-                    Builder
+                        className="focus:ring-blue-500"
+                    />
+                    <span>Builder</span>
                 </label>
-            </div>
-            <button type="submit" disabled={submitting}>
-                {submitting ? 'Submitting...' : message === '' ? 'Join Wait-list' : 'Joined!'}
+            </fieldset>
+
+            <button
+                type="submit"
+                disabled={submitting}
+                className="w-full py-2 bg-blue-600 text-white rounded disabled:opacity-50"
+            >
+                {submitting
+                    ? 'Submitting...'
+                    : message === ''
+                        ? 'Join Wait-list'
+                        : 'Joined!'}
             </button>
+
             {message && (
                 <p
-                    className={
-                        message.toLowerCase().includes('thank')
+                    className={`mt-2 text-center ${message.toLowerCase().includes('thank')
                             ? 'text-green-600'
                             : 'text-red-600'
-                    }
+                        }`}
                 >
                     {message}
                 </p>
