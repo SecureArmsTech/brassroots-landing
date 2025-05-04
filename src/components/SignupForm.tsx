@@ -1,3 +1,4 @@
+// src/components/SignupForm.tsx
 'use client';
 
 import React, { useState, FormEvent } from 'react';
@@ -5,7 +6,8 @@ import React, { useState, FormEvent } from 'react';
 export default function SignupForm() {
     const [email, setEmail] = useState('');
     const [name, setName] = useState('');
-    const [role, setRole] = useState<'buyer' | 'builder' | ''>('');
+    // Default to 'buyer' so Builder never appears selected by default
+    const [role, setRole] = useState<'buyer' | 'builder'>('buyer');
     const [message, setMessage] = useState('');
     const [submitting, setSubmitting] = useState(false);
 
